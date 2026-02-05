@@ -1,4 +1,4 @@
-import { Bookmark } from "@/lib/data"
+import type { Bookmark } from "@/lib/types"
 import { Globe, MoreHorizontal } from "lucide-react"
 
 export function BookmarkList({ bookmarks }: { bookmarks: Bookmark[] }) {

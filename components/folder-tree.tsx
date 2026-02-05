@@ -1,77 +1,160 @@
-import { ChevronRight, Folder, MoreHorizontal } from "lucide-react"
+"use client"
+
+import { ChevronDown, Folder, Layers, Plus } from "lucide-react"
 import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import {
-    SidebarMenu,
-    SidebarMenuAction,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import type { FolderTreeNode } from "@/lib/types"
+import { cn } from "@/lib/utils"
 
-// Placeholder type
-type FolderItem = {
-    id: string
-    name: string
-    subfolders?: FolderItem[]
+type FolderTreeProps = {
+  items: FolderTreeNode[]
+  selectedNodeId: string | null
+  onSelect: (nodeId: string) => void
+  onNewSubfolder: (parentFolderId: string) => void
 }
 
-export function FolderTree({ items }: { items: FolderItem[] }) {
-    return (
-        <SidebarMenu>
-            {items.map((item) => (
-                <FolderItem key={item.id} item={item} />
-            ))}
-        </SidebarMenu>
-    )
+export function FolderTree({
+  items,
+  selectedNodeId,
+  onSelect,
+  onNewSubfolder,
+}: FolderTreeProps) {
+  return (
+    <SidebarMenu>
+      {items.map((node) => (
+        <FolderNode
+          key={node.id}
+          node={node}
+          selectedNodeId={selectedNodeId}
+          onSelect={onSelect}
+          onNewSubfolder={onNewSubfolder}
+          isRoot
+        />
+      ))}
+    </SidebarMenu>
+  )
 }
 
-function FolderItem({ item }: { item: FolderItem }) {
-    if (!item.subfolders?.length) {
-        return (
-            <SidebarMenuItem>
-                <SidebarMenuButton tooltip={item.name}>
-                    <Folder />
-                    <span>{item.name}</span>
-                </SidebarMenuButton>
-                <SidebarMenuAction showOnHover>
-                    <MoreHorizontal />
-                    <span className="sr-only">More</span>
-                </SidebarMenuAction>
-            </SidebarMenuItem>
-        )
-    }
+function FolderNode({
+  node,
+  selectedNodeId,
+  onSelect,
+  onNewSubfolder,
+  isRoot,
+}: {
+  node: FolderTreeNode
+  selectedNodeId: string | null
+  onSelect: (nodeId: string) => void
+  onNewSubfolder: (parentFolderId: string) => void
+  isRoot: boolean
+}) {
+  const isSelected = selectedNodeId === node.id
 
+  // Virtual "All" node
+  if (node.type === "all") {
     return (
-        <Collapsible
-            key={item.name}
-            asChild
-            defaultOpen={false}
-            className="group/collapsible"
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          tooltip={node.name}
+          onClick={() => onSelect(node.id)}
+          isActive={isSelected}
+          className={cn(
+            "text-muted-foreground text-xs font-normal",
+            isSelected && "bg-sidebar-accent text-sidebar-accent-foreground"
+          )}
         >
-            <SidebarMenuItem>
-                <CollapsibleTrigger asChild>
-                    <SidebarMenuButton tooltip={item.name}>
-                        <Folder />
-                        <span>{item.name}</span>
-                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                    </SidebarMenuButton>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                    <SidebarMenuSub>
-                        {item.subfolders.map(sub => (
-                            <SidebarMenuSubItem key={sub.id}>
-                                <FolderItem item={sub} />
-                            </SidebarMenuSubItem>
-                        ))}
-                    </SidebarMenuSub>
-                </CollapsibleContent>
-            </SidebarMenuItem>
-        </Collapsible>
+          <Layers className="size-4 shrink-0" />
+          <span>{node.name}</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
     )
+  }
+
+  // Subfolder (leaf): single row, no expand, no "Add subfolder"
+  if (!isRoot) {
+    return (
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          tooltip={node.name}
+          onClick={() => onSelect(node.id)}
+          isActive={isSelected}
+        >
+          <Folder className="size-4 shrink-0" />
+          <span>{node.name}</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    )
+  }
+
+  // Main folder: expandable, with "Add subfolder" inside (no three-dot menu)
+  const hasChildren = node.children.length > 0
+
+  if (!hasChildren) {
+    return (
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          tooltip={node.name}
+          onClick={() => onSelect(node.id)}
+          isActive={isSelected}
+        >
+          <Folder className="size-4 shrink-0" />
+          <span>{node.name}</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    )
+  }
+
+  return (
+    <Collapsible defaultOpen={false} className="group/collapsible">
+      <SidebarMenuItem>
+        <CollapsibleTrigger asChild>
+          <SidebarMenuButton
+            tooltip={node.name}
+            onClick={() => onSelect(node.id)}
+            isActive={isSelected}
+            className="data-[state=open]:bg-sidebar-accent/50"
+          >
+            <Folder className="size-4 shrink-0" />
+            <span>{node.name}</span>
+            <ChevronDown className="ml-auto size-4 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
+          </SidebarMenuButton>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenuSub className="border-l-0 gap-0.5 py-1">
+            {node.children.map((child) => (
+              <SidebarMenuSubItem key={child.id} className="pl-6">
+                <FolderNode
+                  node={child}
+                  selectedNodeId={selectedNodeId}
+                  onSelect={onSelect}
+                  onNewSubfolder={onNewSubfolder}
+                  isRoot={false}
+                />
+              </SidebarMenuSubItem>
+            ))}
+            <SidebarMenuSubItem className="pl-6">
+              <button
+                type="button"
+                onClick={() => onNewSubfolder(node.id)}
+                className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              >
+                <Plus className="size-3.5 shrink-0" />
+                <span>Add subfolder</span>
+              </button>
+            </SidebarMenuSubItem>
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      </SidebarMenuItem>
+    </Collapsible>
+  )
 }

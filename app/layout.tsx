@@ -4,6 +4,7 @@ import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { ThemeProvider } from "@/components/theme-provider"
+import { BookmarkProvider } from "@/lib/bookmark-context"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,11 +38,13 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SidebarProvider>
-            <AppSidebar />
-            <main className="w-full">
-              <SidebarTrigger />
-              {children}
-            </main>
+            <BookmarkProvider>
+              <AppSidebar />
+              <main className="w-full">
+                <SidebarTrigger />
+                {children}
+              </main>
+            </BookmarkProvider>
           </SidebarProvider>
         </ThemeProvider>
       </body>

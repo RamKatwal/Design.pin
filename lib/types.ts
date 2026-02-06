@@ -1,25 +1,56 @@
 /**
- * Persisted folder. "All" is NOT stored; it's a virtual node at render time.
+ * Persisted folder row (Supabase-backed).
+ * "All" is NOT stored; it's a virtual node at render time.
  */
 export type Folder = {
+  /** Supabase `id` (uuid). */
   id: string
-  name: string
+  /** Supabase `user_id` (uuid) – RLS-scoped, optional in UI. */
+  userId?: string
+  /** Supabase `parent_id` (uuid | null). */
   parentId: string | null
+  /** Supabase `name` (text). */
+  name: string
+  /** Supabase `sort_order` (int). */
+  sortOrder?: number
+  /** Supabase `created_at` (timestamp). */
   createdAt: string
+  /** Supabase `updated_at` (timestamp). */
+  updatedAt?: string
+  /** UI-only color metadata; not persisted. */
   color?: string
-  /** Only for UI (e.g. virtual "All" nodes); not persisted. */
+  /** Only for UI (e.g. virtual \"All\" nodes); not persisted. */
   isSystem?: boolean
 }
 
 /**
- * Bookmark belonging to a single folder by folderId.
+ * Persisted bookmark row (Supabase-backed).
+ * Belongs to a single folder by folderId, or inbox when folderId is null.
  */
 export type Bookmark = {
+  /** Supabase `id` (uuid). */
   id: string
-  folderId: string
+  /** Supabase `user_id` (uuid) – RLS-scoped, optional in UI. */
+  userId?: string
+  /** Supabase `folder_id` (uuid | null). */
+  folderId: string | null
+  /** Supabase `title` (text | null); coerced to non-empty string in UI. */
   title: string
+  /** Supabase `url` (text). */
   url: string
+  /** Supabase `description` (text | null). */
+  description?: string | null
+  /** Supabase `favicon_url` (text | null). */
+  faviconUrl?: string | null
+  /** Supabase `thumbnail_url` (text | null). */
+  thumbnailUrl?: string | null
+  /** Supabase `sort_order` (int). */
+  sortOrder?: number
+  /** Supabase `created_at` (timestamp). */
   createdAt: string
+  /** Supabase `updated_at` (timestamp). */
+  updatedAt?: string
+  /** UI-only icon override; not persisted. */
   icon?: string
 }
 

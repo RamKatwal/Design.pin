@@ -42,7 +42,7 @@ export function getBookmarksForNode(
       ownerId,
       ...getDescendantFolderIds(ownerId, folders),
     ])
-    return bookmarks.filter((b) => descendantIds.has(b.folderId))
+    return bookmarks.filter((b) => b.folderId != null && descendantIds.has(b.folderId))
   }
   return bookmarks.filter((b) => b.folderId === nodeId)
 }
@@ -52,10 +52,7 @@ export function getBookmarksForNode(
  * No subfolder-inside-subfolder. Each folder gets a virtual "All" child first,
  * then (for roots only) direct subfolders.
  */
-export function buildFolderTree(
-  folders: Folder[],
-  _bookmarks: Bookmark[]
-): FolderTreeNode[] {
+export function buildFolderTree(folders: Folder[]): FolderTreeNode[] {
   const byParent = new Map<string | null, Folder[]>()
   for (const f of folders) {
     const key = f.parentId

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import {
   Sidebar,
   SidebarContent,
@@ -54,11 +55,10 @@ export function AppSidebar() {
               <SidebarMenuButton size="lg" asChild>
                 <a href="#">
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    <Home className="size-4" />
+                    <Image src="/logo/Desigdotpin%20LOGO.png" alt="Design.pin" width={32} height={32} />
                   </div>
                   <div className="flex flex-col gap-0.5 leading-none">
-                    <span className="font-semibold">Bookmarks</span>
-                    <span className="">v1.0.0</span>
+                    <span className="font-semibold">Design.pin</span>
                   </div>
                 </a>
               </SidebarMenuButton>

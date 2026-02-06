@@ -12,6 +12,8 @@ export function MainContent() {
   const {
     getBookmarksForSelected,
     getBreadcrumb,
+    loading,
+    error,
   } = useBookmarkContext()
 
   const bookmarks = getBookmarksForSelected()
@@ -46,6 +48,16 @@ export function MainContent() {
       </header>
 
       <main className="flex-1 p-4 md:p-8 pb-32">
+        {error && (
+          <p className="mb-2 text-sm text-red-600 dark:text-red-400">
+            {error}
+          </p>
+        )}
+        {loading && !error && (
+          <p className="mb-2 text-sm text-muted-foreground">
+            Loading bookmarks...
+          </p>
+        )}
         <BookmarkList bookmarks={bookmarks} />
         <FloatingInput />
       </main>

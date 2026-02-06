@@ -8,18 +8,13 @@ import { useBookmarkContext } from "@/lib/bookmark-context"
 export function FloatingInput() {
   const { addBookmark, getTargetFolderId } = useBookmarkContext()
   const [value, setValue] = React.useState("")
-  const [hint, setHint] = React.useState<"none" | "saved" | "select_folder">("none")
+  const [hint, setHint] = React.useState<"none" | "saved">("none")
 
   const targetFolderId = getTargetFolderId()
 
   const handleSubmit = React.useCallback(() => {
     const url = value.trim()
     if (!url) return
-    if (!targetFolderId) {
-      setHint("select_folder")
-      setTimeout(() => setHint("none"), 2500)
-      return
-    }
     addBookmark(targetFolderId, url)
     setValue("")
     setHint("saved")
@@ -34,17 +29,12 @@ export function FloatingInput() {
   }
 
   const placeholder =
-    targetFolderId
+    targetFolderId !== null
       ? "Insert a link to add to this folder..."
-      : "Select a folder in the sidebar, then paste a link..."
+      : "Paste a link to add it to your inbox..."
 
   return (
     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-50">
-      {hint === "select_folder" && (
-        <p className="text-center text-sm text-amber-600 dark:text-amber-400 mb-2">
-          Select a folder in the sidebar first.
-        </p>
-      )}
       {hint === "saved" && (
         <p className="text-center text-sm text-emerald-600 dark:text-emerald-400 mb-2">
           Bookmark added.

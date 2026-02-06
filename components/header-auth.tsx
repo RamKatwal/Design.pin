@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase/client"
+import { createSupabaseBrowserClient } from "@/lib/supabase/client"
 import type { User } from "@supabase/supabase-js"
 import { ChevronsUpDown, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -35,6 +35,7 @@ export function HeaderAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const supabase = createSupabaseBrowserClient()
 
   useEffect(() => {
     const getSession = async () => {

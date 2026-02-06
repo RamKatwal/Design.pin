@@ -17,6 +17,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const metadata: Metadata = {
+  icons: {
+    icon: "/logo/Desigdotpin%20LOGO.png",
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

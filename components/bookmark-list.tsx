@@ -3,12 +3,12 @@ import { Globe, MoreHorizontal } from "lucide-react"
 
 export function BookmarkList({ bookmarks }: { bookmarks: Bookmark[] }) {
     return (
-        <div className="w-full max-w-5xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="w-full mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2">
                 {bookmarks.map((bookmark) => (
                     <div
                         key={bookmark.id}
-                        className="group relative flex flex-col p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-border/40 hover:border-border hover:shadow-sm transition-all cursor-pointer aspect-[1.4/1]"
+                        className="group relative flex flex-col p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-border/40 hover:border-border hover:shadow-sm transition-all cursor-pointer aspect-[1.4/0.8]"
                     >
                         <div className="flex-1 flex flex-col justify-between">
                             <div className="flex items-start justify-between">

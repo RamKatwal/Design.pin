@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# local Supabase config with real secrets (use config.toml placeholders in repo)
+lib/supabase/config.local.toml
+
 # vercel
 .vercel
 
